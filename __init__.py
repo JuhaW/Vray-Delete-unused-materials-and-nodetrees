@@ -14,6 +14,7 @@ bl_info = {
 import bpy
 from bpy.props import BoolProperty
 
+
 class VrayDeleteUnusedMaterials(bpy.types.Operator):
 	'''Remove all unused materials and material nodetrees'''
 	bl_idname = "vray.delete_unused_materials"
