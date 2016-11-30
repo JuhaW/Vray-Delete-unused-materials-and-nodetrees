@@ -38,7 +38,7 @@ class VrayDeleteUnusedMaterials(bpy.types.Operator):
 			nodetrees = [i.name for i in bpy.data.node_groups if i.bl_idname == 'VRayNodeTreeMaterial']
 			
 			for m in bpy.data.materials:
-				if m.vray.ntree.name in nodetrees:
+				if hasattr(m.vray.ntree,'name') and m.vray.ntree.name in nodetrees:
 					nodetrees.remove(m.vray.ntree.name)
 
 			for i in nodetrees:
