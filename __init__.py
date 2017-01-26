@@ -35,7 +35,7 @@ class VrayDeleteUnusedMaterials(bpy.types.Operator):
 		
 			for m in bpy.data.materials:
 				if m.users == 0:
-					print ("Deleted unused material:",m.name)
+					#print ("Deleted unused material:",m.name)
 					bpy.data.materials.remove(m, do_unlink = True)
 					matcnt += 1
 		
@@ -49,7 +49,7 @@ class VrayDeleteUnusedMaterials(bpy.types.Operator):
 					nodetrees.remove(m.vray.ntree.name)
 
 			for i in nodetrees:
-				print ("Deleted unused material nodetree:",i)	
+				#print ("Deleted unused material nodetree:",i)	
 				bpy.data.node_groups.remove(bpy.data.node_groups[i], do_unlink = True)
 				mat_treecnt += 1
 		
@@ -61,21 +61,26 @@ class VrayDeleteUnusedMaterials(bpy.types.Operator):
 					nodetrees.remove(m.vray.ntree.name)
 
 			for i in nodetrees:
-				print ("Deleted unused object nodetree:",i)	
+				#print ("Deleted unused object nodetree:",i)	
 				bpy.data.node_groups.remove(bpy.data.node_groups[i], do_unlink = True)
 				obj_treecnt += 1
 	
 		#LIGHT	
 		if context.scene.light_ntree:	
-			nodetrees = [i.name for i in bpy.data.node_groups if i.bl_idname == 'VRayNodeTreeLight']
-			for m in bpy.data.lamps:
-				if hasattr(m.vray.ntree,'name') and m.vray.ntree.name in nodetrees:
-					nodetrees.remove(m.vray.ntree.name)
+			#remove lamp data
+			lampdata = list(set([i.data for i in bpy.data.objects if i.type == 'LAMP']))
+			print ("lampsdata:",lampdata)
 
-			for i in nodetrees:
-				print ("Deleted unused light nodetree:",i)	
-				bpy.data.node_groups.remove(bpy.data.node_groups[i], do_unlink = True)
-				light_treecnt += 1
+			light_ntrees = []
+			for i in bpy.data.lamps:
+				if i not in lampdata:
+					bpy.data.lamps.remove(i)
+				else:
+					light_ntrees.append(i.vray.ntree)
+						
+			#remove light nodetree
+			[bpy.data.node_groups.remove(i) for i in bpy.data.node_groups if i.bl_idname == 'VRayNodeTreeLight' and i not in light_ntrees]
+
 		
 		#SCENE
 		if context.scene.scene_ntree:	
