@@ -32,13 +32,14 @@ class VrayDeleteUnusedMaterials(bpy.types.Operator):
 		#MATERIAL
 		if context.scene.materials:
 			#delete unused materials
-		
-			for m in bpy.data.materials:
-				if m.users == 0:
-					#print ("Deleted unused material:",m.name)
-					bpy.data.materials.remove(m, do_unlink = True)
-					matcnt += 1
-		
+			
+			mat_used = list(set([m for o in bpy.data.objects if hasattr(o.data,'materials') for m in o.data.materials]))
+			mat_unused = list(set(mat_used) ^ set(bpy.data.materials))
+			
+			for m in mat_unused:
+				bpy.data.materials.remove(m, do_unlink = True)
+				matcnt += 1
+
 		if context.scene.mat_ntree:
 			#delete unused material nodetrees
 
@@ -69,7 +70,7 @@ class VrayDeleteUnusedMaterials(bpy.types.Operator):
 		if context.scene.light_ntree:	
 			#remove lamp data
 			lampdata = list(set([i.data for i in bpy.data.objects if i.type == 'LAMP']))
-			print ("lampsdata:",lampdata)
+			#print ("lampsdata:",lampdata)
 
 			light_ntrees = []
 			for i in bpy.data.lamps:
@@ -141,6 +142,6 @@ def unregister():
 	del bpy.types.Scene.scene_ntree
 	del bpy.types.Scene.world_ntree
 	
-    
+	
 if __name__ == "__main__":
 	register()
