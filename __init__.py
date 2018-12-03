@@ -124,7 +124,7 @@ def Vray_Materials_Delete(self, context):
 	
 def register():
 	bpy.utils.register_module(__name__)
-	bpy.types.VRayPanelNodeTrees.append(Vray_Materials_Delete)
+	bpy.types.VRAY_PT_NodeTrees.append(Vray_Materials_Delete)
 	bpy.types.Scene.materials = BoolProperty(default=True )
 	bpy.types.Scene.mat_ntree = BoolProperty(default=True )
 	bpy.types.Scene.obj_ntree = BoolProperty(default=True )
@@ -134,7 +134,7 @@ def register():
 	
 def unregister():
 	bpy.utils.unregister_module(__name__)
-	bpy.types.VRayPanelNodeTrees.remove(Vray_Materials_Delete)
+	bpy.types.VRAY_PT_NodeTrees.remove(Vray_Materials_Delete)
 	del bpy.types.Scene.materials
 	del bpy.types.Scene.mat_ntree
 	del bpy.types.Scene.obj_ntree
